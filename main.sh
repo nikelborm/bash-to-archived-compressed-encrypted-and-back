@@ -2,7 +2,7 @@
 
 # Declare global environment variable for gpg recipient
 # Change to the desired recipient email or key ID or override it during invocation
-export GPG_RECIPIENT="recipient_email@example.com"
+export GPG_RECIPIENT="kolya007.klass@gmail.com"
 
 # Function to create a tar archive, compress with zstd, and encrypt with gpg
 do_tar_zstd_gpg() {
