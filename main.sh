@@ -92,14 +92,6 @@ EOF
   echo "$usage"
 }
 
-
-
-# Check if a function name was passed as an argument
-if [ $# -eq 0 ]; then
-  echo "Usage: $0 function_name [args...]"
-  exit 1
-fi
-
 # Check the first argument and call the appropriate function
 case "$1" in
   do_tar_zstd_gpg)
