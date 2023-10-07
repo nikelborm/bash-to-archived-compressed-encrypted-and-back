@@ -59,7 +59,7 @@ do_ungpg_unzstd_untar() {
   mkdir -p "$dest_dir"
 
   # Step 1: Decrypt with PGP (gpg), decompress with zstd, and extract with tar
-  gpg --recipient "$GPG_RECIPIENT" --output - "$source_file" | zstd -d | tar xf - -C "$dest_dir"
+  gpg --decrypt --recipient "$GPG_RECIPIENT" --output - "$source_file" | zstd -d | tar xf - -C "$dest_dir"
 }
 
 # Show help message
