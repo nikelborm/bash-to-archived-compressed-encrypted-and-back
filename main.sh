@@ -77,10 +77,12 @@ Usage: main.sh do_tar_zstd_gpg source_dir dest_file
   dest_dir: The destination directory for the extracted files
 
 Examples:
-  Put all files and dirs inside ~/.local/share/TelegramDesktop directory into encrypted compressed archive ~/tg.tar.zst.gpg:
+  Put all files and dirs which are inside ~/.local/share/TelegramDesktop directory
+  into encrypted compressed archive ~/tg.tar.zst.gpg:
     ./main.sh do_tar_zstd_gpg ~/.local/share/TelegramDesktop ~/tg.tar.zst.gpg
 
-  Put all files and dirs inside encrypted compressed archive ~/tg.tar.zst.gpg into directory ~/.local/share/TelegramDesktop:
+  Put all files and dirs which are inside encrypted compressed archive ~/tg.tar.zst.gpg
+  into directory ~/.local/share/TelegramDesktop:
     rm -rf ~/.local/share/TelegramDesktop; ./main.sh undo_tar_zstd_gpg ~/tg.tar.zst.gpg ~/.local/share/TelegramDesktop
 
 Notes:
