@@ -30,11 +30,11 @@ do_tar_zstd_gpg() {
   mkdir -p "$(dirname "$dest_file")"
 
   # Create the tar archive, compress with zstd, and encrypt with gpg
-  tar cf - "$source_dir" | zstd - | gpg --recipient "$GPG_RECIPIENT" --output "$dest_file" --encrypt -
+  tar cf - -C "$source_dir" . | zstd - | gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$dest_file" -
 }
 
 # Function to decrypt, decompress, and extract files from an encrypted compressed archive
-do_ungpg_unzstd_untar() {
+undo_tar_zstd_gpg() {
   if [ $# -ne 2 ]; then
     echo "Usage: $0 source_file dest_dir"
     return 1
@@ -66,10 +66,10 @@ do_ungpg_unzstd_untar() {
 show_help() {
   usage=$(cat << EOF
 Usage: main.sh do_tar_zstd_gpg source_dir dest_file
-       main.sh do_ungpg_unzstd_untar source_file dest_dir
+       main.sh undo_tar_zstd_gpg source_file dest_dir
 
   do_tar_zstd_gpg: Create a tar archive, compress with zstd, and encrypt with gpg
-  do_ungpg_unzstd_untar: Decrypt, decompress, and extract files from an encrypted compressed archive
+  undo_tar_zstd_gpg: Decrypt, decompress, and extract files from an encrypted compressed archive
 
   source_dir: The source directory to be archived
   source_file: The source archive file to be extracted
@@ -77,16 +77,27 @@ Usage: main.sh do_tar_zstd_gpg source_dir dest_file
   dest_dir: The destination directory for the extracted files
 
 Examples:
-  Create an encrypted compressed archive of a directory:
-    main.sh do_tar_zstd_gpg /path/to/source_dir /path/to/file.tar.zst.gpg
+  Put all files and dirs inside ~/.local/share/TelegramDesktop directory into encrypted compressed archive ~/tg.tar.zst.gpg:
+    ./main.sh do_tar_zstd_gpg ~/.local/share/TelegramDesktop ~/tg.tar.zst.gpg
 
-  Extract an encrypted compressed archive to a directory:
-    main.sh do_ungpg_unzstd_untar /path/to/file.tar.zst.gpg /path/to/dest_dir
+  Put all files and dirs inside encrypted compressed archive ~/tg.tar.zst.gpg into directory ~/.local/share/TelegramDesktop:
+    rm -rf ~/.local/share/TelegramDesktop; ./main.sh undo_tar_zstd_gpg ~/tg.tar.zst.gpg ~/.local/share/TelegramDesktop
 
-Note: The GPG recipient email or key ID can be set using the GPG_RECIPIENT environment variable. For example:
-  GPG_RECIPIENT="recipient_email@example.com" main.sh do_tar_zstd_gpg /path/to/source_dir /path/to/dest_file
+Notes:
+  Env
+    The GPG recipient email or key ID can be set using the GPG_RECIPIENT environment variable. For example:
+    GPG_RECIPIENT="recipient_email@example.com" main.sh do_tar_zstd_gpg /path/to/source_dir /path/to/dest_file
 
-  Script does not add any extensions, so it is recommended that you add .tar.zst.gpg to the destination file
+  Archiving
+    Script does not check if the destination file exists, so it is recommended
+    that you manually delete the old archive before creating a new one.
+
+    Script does not add any extensions, so it is recommended
+    that you manually add .tar.zst.gpg to the archive file
+
+  Extracting
+    Script does not handle conflicts when extracting files, so it is recommended
+    that you manually delete the content of destination directory before extracting.
 EOF
 )
   echo "$usage"
@@ -97,8 +108,8 @@ case "$1" in
   do_tar_zstd_gpg)
     do_tar_zstd_gpg "$2" "$3"
     ;;
-  do_ungpg_unzstd_untar)
-    do_ungpg_unzstd_untar "$2" "$3"
+  undo_tar_zstd_gpg)
+    undo_tar_zstd_gpg "$2" "$3"
     ;;
   *)
     show_help
